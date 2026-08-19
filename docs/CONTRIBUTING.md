@@ -37,7 +37,7 @@ The package's behavioral invariants live in [AGENTS.md](../AGENTS.md); read them
 
 ## Package minimality
 
-The published tarball is allowlisted via `"files": ["dist"]` in `package.json` (source of truth). `.npmignore` exists only as a defensive denylist behind it. After any packaging change, run `make pack-check` and confirm only `dist/`, `package.json`, and `LICENSE` ship. (The README lives in `docs/`, outside the package root, so npm does not pack it; the npm package page has no readme until that's addressed.)
+The published tarball is allowlisted via `"files": ["dist"]` in `package.json` (source of truth). `.npmignore` exists only as a defensive denylist behind it. After any packaging change, run `make pack-check` and confirm only `dist/`, `package.json`, `LICENSE`, and `README.md` ship. (The README lives in `docs/`; the `prepack` script copies it to the package root so npm packs it, and `postpack` removes the copy — the root `README.md` is gitignored.)
 
 ## The example app
 

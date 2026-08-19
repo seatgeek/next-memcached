@@ -5,6 +5,9 @@ coverage/
 *.tgz
 .DS_Store
 
+# Transient copy made by prepack (removed by postpack)
+/README.md
+
 # Next.js (examples/)
 .next/
 next-env.d.ts

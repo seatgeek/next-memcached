@@ -15,7 +15,9 @@
   <a href="../LICENSE"><img alt="license: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
 </p>
 
-Memcached as the shared cache behind Next.js [`cacheHandlers`](https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheHandlers) (`'use cache'` / Cache Components). Built for self-hosted deployments (Kubernetes, ECS, bare VMs) where every pod must share one cache instead of keeping its own in-memory LRU.
+A reliable, drop-in [`cacheHandlers`](https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheHandlers) implementation: `'use cache'` backed by memcached (including AWS ElastiCache Serverless) instead of a per-pod in-memory LRU. A dead cache costs misses, never stale data, never a broken render.
+
+Memcached as the shared cache behind Next.js `cacheHandlers` (`'use cache'` / Cache Components). Built for self-hosted deployments (Kubernetes, ECS, bare VMs) where every pod must share one cache instead of keeping its own in-memory LRU.
 
 **Fail-safe by construction: a dead memcached costs you cache misses, never render errors, and never stale data.**
 

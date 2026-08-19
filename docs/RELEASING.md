@@ -60,5 +60,4 @@ The `release` workflow refuses to run when dispatched out of order. Each failure
 ## After the first release
 
 - Verify the npm and install-size badges in the README render (they 404 until the package exists on npm).
-- The README lives in `docs/`, outside the package root, so npm packs no readme and the package page renders without one. Decide whether to copy it into the tarball at publish time or accept the bare page.
 - Remove the "not yet published" note from the README.

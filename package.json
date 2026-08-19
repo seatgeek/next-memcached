@@ -1,6 +1,6 @@
 {
   "name": "@seatgeek/next-memcached",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Next.js 16 cacheHandlers ('use cache' / Cache Components) implementation backed by memcached, a shared cache for self-hosted multi-node deployments, ElastiCache Serverless ready.",
   "keywords": [
     "next",
@@ -51,6 +51,8 @@
   "files": ["dist"],
   "scripts": {
     "build": "tsup",
+    "prepack": "cp docs/README.md README.md",
+    "postpack": "rm -f README.md",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "test:services:start": "docker compose up -d",

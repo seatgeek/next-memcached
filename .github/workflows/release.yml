@@ -70,8 +70,16 @@ jobs:
       - name: Quality gates
         run: pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm check:exports
 
-      - name: Publish to npm (with provenance)
-        run: pnpm publish --access public --provenance --no-git-checks
+      # npm refuses --provenance when the source repo is private, so it is
+      # applied only once the repo is public. Until then packages publish
+      # without a provenance statement; nothing else changes.
+      - name: Publish to npm (provenance when the repo is public)
+        run: |
+          provenance=""
+          if [ "${{ github.event.repository.private }}" = "false" ]; then
+            provenance="--provenance"
+          fi
+          pnpm publish --access public $provenance --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
