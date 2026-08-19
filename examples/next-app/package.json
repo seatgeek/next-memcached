@@ -1,0 +1,29 @@
+{
+  "name": "next-memcached-example",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Runnable demo for @seatgeek/next-memcached: cached fragments, hard/soft tag invalidation, per-session caching, live memcached key inspector",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@seatgeek/next-memcached": "workspace:*",
+    "next": "16.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1188" height="508" viewBox="0 0 1188 508" font-family="Inter, -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <pattern id="hatchL" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="9" height="9" fill="#fcfcfc"/>
+      <line x1="0" y1="0" x2="0" y2="9" stroke="#ededed" stroke-width="1"/>
+    </pattern>
+    <filter id="shadowL" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.6" flood-color="#000000" flood-opacity="0.07"/>
+    </filter>
+    <marker id="arrL" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="#18181b"/>
+    </marker>
+
+    <symbol id="i-cloud" viewBox="0 0 20 20">
+      <path d="M6.2 15.5h9.4a3.1 3.1 0 0 0 .5-6.16A4.6 4.6 0 0 0 7.1 6.6 3.6 3.6 0 0 0 6.2 15.5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-server" viewBox="0 0 20 20">
+      <rect x="2.5" y="3.5" width="15" height="5.2" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <rect x="2.5" y="11.3" width="15" height="5.2" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <circle cx="5.6" cy="6.1" r="0.55" fill="currentColor" stroke="none"/>
+      <circle cx="5.6" cy="13.9" r="0.55" fill="currentColor" stroke="none"/>
+    </symbol>
+    <symbol id="i-chip" viewBox="0 0 20 20">
+      <rect x="5" y="5" width="10" height="10" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <g stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <line x1="8" y1="1.6" x2="8" y2="5"/>
+        <line x1="12" y1="1.6" x2="12" y2="5"/>
+        <line x1="8" y1="15" x2="8" y2="18.4"/>
+        <line x1="12" y1="15" x2="12" y2="18.4"/>
+        <line x1="1.6" y1="8" x2="5" y2="8"/>
+        <line x1="1.6" y1="12" x2="5" y2="12"/>
+        <line x1="15" y1="8" x2="18.4" y2="8"/>
+        <line x1="15" y1="12" x2="18.4" y2="12"/>
+      </g>
+    </symbol>
+    <symbol id="i-cube" viewBox="0 0 20 20">
+      <path d="M10 2.2 17 5.9 17 14.1 10 17.8 3 14.1 3 5.9Z M10 2.2 10 10 M10 10 17 5.9 M10 10 3 5.9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-container" viewBox="0 0 20 20">
+      <rect x="1.6" y="5" width="16.8" height="10.6" rx="1" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M6.6 5v10.6 M13.4 5v10.6 M1.6 10.3h16.8" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 20 20">
+      <path d="M10 2 16 4.3 16 9.6 C16 13.7 13.2 16.8 10 18 6.8 16.8 4 13.7 4 9.6 L4 4.3Z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+
+  <rect width="1188" height="508" fill="#ffffff"/>
+
+  <g transform="translate(24,24)">
+  <!-- Internet -->
+  <rect x="40" y="198" width="120" height="64" rx="10" fill="#ffffff" stroke="#e4e4e7" filter="url(#shadowL)"/>
+  <use href="#i-cloud" x="62" y="221" width="18" height="18" color="#71717a"/>
+  <text x="90" y="235" fill="#18181b" font-size="14.5" font-weight="600" letter-spacing="-0.1">Internet</text>
+
+  <!-- Load balancer -->
+  <rect x="220" y="198" width="190" height="64" rx="10" fill="#ffffff" stroke="#e4e4e7" filter="url(#shadowL)"/>
+  <use href="#i-server" x="242" y="221" width="18" height="18" color="#71717a"/>
+  <text x="270" y="235" fill="#18181b" font-size="14.5" font-weight="600" letter-spacing="-0.1">Load balancer</text>
+
+  <!-- VPC group -->
+  <rect x="440" y="20" width="660" height="420" rx="14" fill="url(#hatchL)" stroke="#e4e4e7" stroke-width="1" stroke-dasharray="3 4"/>
+  <use href="#i-shield" x="462" y="35" width="15" height="15" color="#a1a1aa"/>
+  <text x="486" y="48" fill="#71717a" font-size="10.5" font-weight="600" letter-spacing="1.4">PRIVATE VPC</text>
+
+  <!-- spine arrows -->
+  <g stroke="#18181b" stroke-width="1.4" fill="none" marker-end="url(#arrL)">
+    <line x1="160" y1="230" x2="216" y2="230"/>
+    <path d="M410,230 L420,230 Q424,230 424,196 L424,140 Q424,116 448,116 L466,116"/>
+    <line x1="410" y1="230" x2="466" y2="230"/>
+    <path d="M410,230 L420,230 Q424,230 424,264 L424,320 Q424,344 448,344 L466,344"/>
+    <path d="M690,116 L706,116 Q730,116 730,140 L730,181 Q730,205 754,205 L796,205"/>
+    <line x1="690" y1="230" x2="796" y2="230"/>
+    <path d="M690,344 L706,344 Q730,344 730,320 L730,279 Q730,255 754,255 L796,255"/>
+  </g>
+
+  <!-- pods -->
+  <g>
+    <rect x="470" y="79" width="220" height="74" rx="10" fill="#ffffff" stroke="#e4e4e7" filter="url(#shadowL)"/>
+    <use href="#i-cube" x="512" y="105" width="22" height="22" color="#71717a"/>
+    <text x="542" y="121" font-size="14.5"><tspan font-family="'Helvetica Neue', Arial, sans-serif" font-weight="700" letter-spacing="-0.4" fill="#18181b">Next.js</tspan><tspan fill="#a1a1aa" font-weight="400"> | </tspan><tspan font-size="11" font-weight="600" fill="#a1a1aa">Pod 1</tspan></text>
+  </g>
+  <g>
+    <rect x="470" y="193" width="220" height="74" rx="10" fill="#ffffff" stroke="#e4e4e7" filter="url(#shadowL)"/>
+    <use href="#i-cube" x="512" y="219" width="22" height="22" color="#71717a"/>
+    <text x="542" y="235" font-size="14.5"><tspan font-family="'Helvetica Neue', Arial, sans-serif" font-weight="700" letter-spacing="-0.4" fill="#18181b">Next.js</tspan><tspan fill="#a1a1aa" font-weight="400"> | </tspan><tspan font-size="11" font-weight="600" fill="#a1a1aa">Pod 2</tspan></text>
+  </g>
+  <g>
+    <rect x="470" y="307" width="220" height="74" rx="10" fill="#ffffff" stroke="#e4e4e7" filter="url(#shadowL)"/>
+    <use href="#i-cube" x="512" y="333" width="22" height="22" color="#71717a"/>
+    <text x="542" y="349" font-size="14.5"><tspan font-family="'Helvetica Neue', Arial, sans-serif" font-weight="700" letter-spacing="-0.4" fill="#18181b">Next.js</tspan><tspan fill="#a1a1aa" font-weight="400"> | </tspan><tspan font-size="11" font-weight="600" fill="#a1a1aa">Pod N</tspan></text>
+  </g>
+
+  <!-- memcached -->
+  <rect x="800" y="180" width="240" height="100" rx="10" fill="#18181b" filter="url(#shadowL)"/>
+  <rect x="870" y="169" width="100" height="22" rx="11" fill="#f4f4f5" stroke="#e4e4e7"/>
+  <text x="920" y="184" text-anchor="middle" fill="#52525b" font-size="10.5" font-weight="600" letter-spacing="0.2">Shared cache</text>
+  <use href="#i-chip" x="833" y="214" width="32" height="32" color="#a1a1aa"/>
+  <text x="877" y="237" fill="#fafafa" font-size="19" font-weight="700" letter-spacing="-0.2">memcached</text>
+  </g>
+</svg>

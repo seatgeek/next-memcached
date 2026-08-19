@@ -1,0 +1,22 @@
+# Test services for the integration suite (see AGENTS.md / README).
+#
+#   memcached-plain — target for test/index.test.ts (localhost:11211)
+#   memcached-tls   — TLS-only target for test/tls.test.ts (localhost:21211),
+#                     mirroring ElastiCache Serverless constraints: TLS
+#                     mandatory, ascii protocol only, no UDP. Certs are
+#                     checked in (test-only); regenerate via
+#                     certs/make-certs.sh.
+services:
+  memcached-plain:
+    image: memcached:1.6.44
+    ports:
+      - "11211:11211"
+    command: memcached -m 64
+
+  memcached-tls:
+    image: memcached:1.6.44
+    ports:
+      - "21211:11211"
+    command: memcached -m 64 -Z -o ssl_chain_cert=/certs/server_crt.pem -o ssl_key=/certs/server_key.pem -o ssl_session_cache -B ascii -U 0
+    volumes:
+      - ./certs:/certs:ro

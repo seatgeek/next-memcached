@@ -1,0 +1,100 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # The two supported LTS lines (matches the engines floor of >=22.19).
+        node-version: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Start memcached test services (plain + TLS)
+        run: docker compose up -d
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Guard — src/ must not import from 'next'
+        run: |
+          if grep -rnE "from ['\"]next" src/; then
+            echo "::error::src/ must stay free of 'next' imports (the handler types are mirrored locally so the package works across Next versions without a peer dependency)."
+            exit 1
+          fi
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test (integration, with coverage thresholds)
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Validate package exports (publint + arethetypeswrong)
+        run: pnpm check:exports
+
+      - name: Show publishable contents
+        run: npm pack --dry-run
+
+  # Verifies the "works with Next.js >= 16.3" claim: builds the example app
+  # (which type-checks lib/handler-type-compat.ts against Next's own
+  # CacheHandler interface, and prerenders 'use cache' fragments through the
+  # handler into live memcached) against the floor, the latest 16.x, and
+  # canary. The canary leg is an early-warning radar for cacheHandlers
+  # interface churn (e.g. the expireTags -> updateTags rename) and must not
+  # block merges. `pnpm add` mutates only the runner's workspace.
+  compat:
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental == true }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { next: "16.3.0", label: floor }
+          - { next: "16", label: latest-16 }
+          - { next: "canary", label: canary, experimental: true }
+    name: compat (next@${{ matrix.label }})
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Start memcached test services (plain + TLS)
+        run: docker compose up -d
+
+      - name: Install dependencies (workspace)
+        run: pnpm install --frozen-lockfile
+
+      - name: Pin Next.js ${{ matrix.next }} in the example app
+        run: pnpm --filter next-memcached-example add next@${{ matrix.next }}
+
+      - name: Build the package
+        run: pnpm build
+
+      - name: Build the example app against Next.js ${{ matrix.next }}
+        run: pnpm --filter next-memcached-example build

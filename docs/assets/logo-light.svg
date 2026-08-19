@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="130" viewBox="0 0 480 130">
+  <defs><linearGradient id="g2l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="0.75" stop-color="#f5f5f5"/><stop offset="1" stop-color="#dcf0e4"/></linearGradient></defs>
+  <rect x="2" y="2" width="476" height="126" rx="20" fill="url(#g2l)" stroke="#e2e2e2" stroke-width="1"/>
+  <g fill="#000000" transform="translate(98,50) scale(0.3807)">
+    <path d="M261.919 0.0330722H330.547V12.7H303.323V79.339H289.71V12.7H261.919V0.0330722Z"></path>
+    <path d="M149.052 0.0330722V12.7H94.0421V33.0772H138.281V45.7441H94.0421V66.6721H149.052V79.339H80.43V12.7H80.4243V0.0330722H149.052Z"></path>
+    <path d="M183.32 0.0661486H165.506L229.312 79.3721H247.178L215.271 39.7464L247.127 0.126654L229.312 0.154184L206.352 28.6697L183.32 0.0661486Z"></path>
+    <path d="M201.6 56.7148L192.679 45.6229L165.455 79.4326H183.32L201.6 56.7148Z"></path>
+    <path clip-rule="evenodd" d="M80.907 79.339L17.0151 0H0V79.3059H13.6121V16.9516L63.8067 79.339H80.907Z" fill-rule="evenodd"></path>
+  </g>
+  <line x1="258" y1="35" x2="258" y2="95" stroke="#e2e2e2" stroke-width="1"/>
+  <text x="280" y="71" font-family="'Menlo','Consolas','Courier New',monospace" font-size="20.6" fill="#333333" text-anchor="start">memcached</text>
+</svg>

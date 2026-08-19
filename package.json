@@ -1,0 +1,79 @@
+{
+  "name": "@seatgeek/next-memcached",
+  "version": "0.0.0",
+  "description": "Next.js 16 cacheHandlers ('use cache' / Cache Components) implementation backed by memcached, a shared cache for self-hosted multi-node deployments, ElastiCache Serverless ready.",
+  "keywords": [
+    "next",
+    "nextjs",
+    "cache",
+    "cache-handler",
+    "cacheHandlers",
+    "use-cache",
+    "cache-components",
+    "memcached",
+    "elasticache",
+    "serverless",
+    "distributed-cache",
+    "isr"
+  ],
+  "license": "Apache-2.0",
+  "author": "SeatGeek",
+  "homepage": "https://github.com/seatgeek/next-memcached#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seatgeek/next-memcached.git"
+  },
+  "bugs": {
+    "url": "https://github.com/seatgeek/next-memcached/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "packageManager": "pnpm@10.29.3",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:services:start": "docker compose up -d",
+    "test:services:stop": "docker compose down",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "check:exports": "publint && attw --pack .",
+    "docs": "grip . 6419",
+    "changeset": "changeset"
+  },
+  "dependencies": {
+    "memcache": "^1.10.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
+    "@biomejs/biome": "^1.9.4",
+    "@changesets/cli": "^2.29.5",
+    "@types/node": "^22.10.5",
+    "@vitest/coverage-v8": "^2.1.8",
+    "publint": "^0.3.12",
+    "tsup": "^8.5.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
