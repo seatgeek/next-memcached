@@ -1,6 +1,7 @@
 node_modules/
 dist/
 coverage/
+e2e/reports/
 *.log
 *.tgz
 .DS_Store

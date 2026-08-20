@@ -1,7 +1,7 @@
 /**
  * TLS integration suite against the serverless-sim memcached started from
  * this repo's docker-compose.yml (memcached-tls, TLS-only on localhost:21211,
- * certs under certs/ — assumed running).
+ * certs under certs/ - assumed running).
  */
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -11,7 +11,7 @@ import type { CacheEntry } from "./types.js";
 
 const TLS_URI = "memcaches://localhost:21211";
 const CA_PATH = fileURLToPath(new URL("../certs/cacert.pem", import.meta.url));
-// A valid PEM that is NOT the signer of the server's certificate — TLS
+// A valid PEM that is NOT the signer of the server's certificate - TLS
 // verification must fail, and the handler must degrade to cache-down.
 const WRONG_CA_PATH = fileURLToPath(
   new URL("../certs/server_crt.pem", import.meta.url),

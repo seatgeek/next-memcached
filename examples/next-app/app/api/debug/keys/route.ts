@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { NextResponse } from "next/server";
+import type { DebugKey } from "@/lib/debug-keys";
 import {
-  inspectGet,
+  inspectGetMany,
   listKeys,
   parseMemcachedUri,
 } from "@/lib/memcached-inspector";
@@ -10,32 +11,15 @@ import {
  * GET /api/debug/keys
  *
  * Enumerates ALL keys currently in memcached over a raw TCP socket (no
- * driver, no handler package — independent proof that `'use cache'` entries
+ * driver, no handler package - independent proof that `'use cache'` entries
  * persist in the shared cache rather than an in-process LRU). For each key
  * the value is fetched and, when it parses as the handler's envelope JSON
  * ({v:1, tags, timestamp, ...}), the decoded metadata is included.
  *
- * Local demo only — deliberately unauthenticated.
+ * Local demo only - deliberately unauthenticated.
  */
 
 const MAX_VALUES_FETCHED = 200;
-
-interface DebugKey {
-  key: string;
-  sizeBytes: number;
-  /** Unix expiry seconds, -1 = never. */
-  exp: number;
-  /** Seconds until expiry, null when exp is -1/unknown. */
-  ttlSeconds: number | null;
-  kind: "entry" | "tag" | "other";
-  /** Envelope metadata, when the value decodes as our envelope. */
-  tags?: string[];
-  cachedAt?: number;
-  stale?: number;
-  revalidate?: number;
-  expire?: number;
-  valuePreview?: string;
-}
 
 export async function GET() {
   const uri = process.env.MEMCACHED_URI ?? "localhost:11211";
@@ -57,20 +41,24 @@ export async function GET() {
     const listing = await listKeys(opts);
     const nowSeconds = Math.floor(Date.now() / 1000);
 
-    const keys: DebugKey[] = await Promise.all(
-      listing.keys.slice(0, MAX_VALUES_FETCHED).map(async (meta) => {
-        const base: DebugKey = {
-          key: meta.key,
-          sizeBytes: meta.size,
-          exp: meta.exp,
-          ttlSeconds: meta.exp > 0 ? meta.exp - nowSeconds : null,
-          kind: "other",
-        };
-        const raw = await inspectGet(opts, meta.key).catch(() => undefined);
-        if (raw === undefined) return base;
-        return { ...base, ...describeValue(raw) };
-      }),
-    );
+    const inspected = listing.keys.slice(0, MAX_VALUES_FETCHED);
+    const values = await inspectGetMany(
+      opts,
+      inspected.map((meta) => meta.key),
+    ).catch(() => new Map<string, string>());
+
+    const keys: DebugKey[] = inspected.map((meta) => {
+      const base: DebugKey = {
+        key: meta.key,
+        sizeBytes: meta.size,
+        exp: meta.exp,
+        ttlSeconds: meta.exp > 0 ? meta.exp - nowSeconds : null,
+        kind: "other",
+      };
+      const raw = values.get(meta.key);
+      if (raw === undefined) return base;
+      return { ...base, ...describeValue(raw) };
+    });
 
     return NextResponse.json({
       target: `${host}:${port}`,

@@ -1,4 +1,4 @@
-.PHONY: init services services-stop build test lint typecheck format check pack-check example docs
+.PHONY: init services services-stop build test e2e lint typecheck format check pack-check example docs
 
 init: ## Install toolchain (mise) and dependencies
 	brew bundle
@@ -16,6 +16,11 @@ build: ## Build ESM + CJS bundles and type declarations
 
 test: ## Run integration tests with coverage (requires `make services`)
 	pnpm test
+
+e2e: build ## Run the e2e suite against the example app, plain + TLS (requires `make services`)
+	pnpm --filter next-memcached-example build
+	pnpm test:e2e:plain
+	pnpm test:e2e:tls
 
 lint: ## Lint and check formatting
 	pnpm lint

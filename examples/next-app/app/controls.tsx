@@ -12,7 +12,7 @@ const palette = {
 
 /**
  * Small client button that hits one of the existing route handlers (the same
- * ones the e2e harness calls — UI and harness share one invalidation path),
+ * ones the e2e harness calls - UI and harness share one invalidation path),
  * then router.refresh()es so the server re-renders every fragment and any
  * invalidated `'use cache'` entry visibly changes.
  */
@@ -67,7 +67,7 @@ export function ActionButton({
   );
 }
 
-/** Plain re-render (no invalidation) — shows hits keeping timestamps frozen. */
+/** Plain re-render (no invalidation) - shows hits keeping timestamps frozen. */
 export function RefreshButton() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

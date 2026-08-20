@@ -1,6 +1,6 @@
 /**
  * Integration suite against the memcached started from example/docker-compose.yml
- * (localhost:11211 — assumed running).
+ * (localhost:11211 - assumed running).
  */
 import { describe, expect, it } from "vitest";
 import { createMemcachedCacheHandler, entryKey } from "./index.js";
@@ -150,7 +150,7 @@ describe("fail-safe re-seed on missing tag records", () => {
     await expect(inspector.delete(tagKey(tag))).resolves.toBe(true);
     await expect(handler.get(cacheKey, [])).resolves.toBeUndefined();
 
-    // Let the fire-and-forget re-seed land, then write a fresh entry — it
+    // Let the fire-and-forget re-seed land, then write a fresh entry - it
     // must hit (no permanent miss loop).
     await sleep(100);
     await handler.set(cacheKey, pendingEntryOf("v2", { tags: [tag] }));
@@ -167,7 +167,7 @@ describe("fail-safe re-seed on missing tag records", () => {
     // First read with a never-seen soft tag: fail-safe miss + re-seed.
     await expect(handler.get(cacheKey, [softTag])).resolves.toBeUndefined();
 
-    // A set→get cycle after the re-seed must hit — the re-seeded record must
+    // A set→get cycle after the re-seed must hit - the re-seeded record must
     // not keep expiring newer entries.
     await sleep(100);
     await handler.set(cacheKey, pendingEntryOf("v2"));

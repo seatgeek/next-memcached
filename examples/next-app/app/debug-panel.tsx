@@ -13,28 +13,7 @@ const palette = {
   down: "#DB1600",
 };
 
-interface DebugKey {
-  key: string;
-  sizeBytes: number;
-  exp: number;
-  ttlSeconds: number | null;
-  kind: "entry" | "tag" | "other";
-  tags?: string[];
-  cachedAt?: number;
-  stale?: number;
-  revalidate?: number;
-  expire?: number;
-  valuePreview?: string;
-}
-
-interface DebugResponse {
-  target: string;
-  source: "metadump" | "cachedump" | null;
-  count: number;
-  truncated: boolean;
-  keys: DebugKey[];
-  error: string | null;
-}
+import type { DebugKeysResponse as DebugResponse } from "@/lib/debug-keys";
 
 /**
  * The proof panel: enumerates what's ACTUALLY in memcached via a raw socket

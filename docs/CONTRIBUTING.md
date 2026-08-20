@@ -22,7 +22,10 @@ pnpm test:watch   # vitest watch mode
 make format       # biome auto-fix
 make pack-check   # npm pack --dry-run: verify tarball contents stay minimal
 make example      # build the package + run examples/next-app against the services
+make e2e          # end-to-end: next start of the example app, cache semantics over HTTP, plain + TLS
 ```
+
+The e2e suite lives in `e2e/` with its own vitest config (`e2e/vitest.config.ts`) and is **not** part of the coverage-ratcheted unit/integration suite. It emits standard JUnit output per mode (`e2e/reports/junit-{plain,tls}.xml`), which CI publishes to the job summary.
 
 ## Ground rules
 

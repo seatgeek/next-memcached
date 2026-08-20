@@ -2,11 +2,13 @@ import * as net from "node:net";
 import * as tls from "node:tls";
 
 /**
- * Minimal raw text-protocol memcached client, shared by:
- *   - the acceptance harness (e2e/memcached-inspector.ts re-exports from here)
- *   - the demo app's /api/debug/keys inspection endpoint
+ * Minimal raw text-protocol memcached client behind the demo app's
+ * /api/debug/keys inspection endpoint (which the e2e suite consumes over
+ * HTTP - deliberately not imported directly, so the app process with its
+ * own MEMCACHED_URI/TLS env stays the single source of truth for what the
+ * handler sees).
  *
- * Deliberately has zero dependency on any driver/handler package — it must
+ * Deliberately has zero dependency on any driver/handler package - it must
  * work before either exists, so both consumers can independently verify
  * what's actually sitting in memcached rather than trusting the app's own
  * claims.
@@ -97,7 +99,7 @@ function sendAndRead(
   });
 }
 
-/** Raw `get <key>` — returns the value string, or undefined on a miss. */
+/** Raw `get <key>` - returns the value string, or undefined on a miss. */
 export async function inspectGet(
   opts: InspectorOptions,
   key: string,
@@ -114,7 +116,41 @@ export async function inspectGet(
   }
 }
 
-/** Raw `stats` — returns key/value pairs. */
+/**
+ * Multi-key `get` over a SINGLE connection. One socket per key doesn't
+ * scale: enumerating a full keyspace would open hundreds of parallel
+ * connections (each a fresh TLS handshake on memcaches:// targets), which
+ * fail under load and silently misclassify keys. Same single-line-value
+ * framing assumption as inspectGet.
+ */
+export async function inspectGetMany(
+  opts: InspectorOptions,
+  keys: string[],
+): Promise<Map<string, string>> {
+  const values = new Map<string, string>();
+  if (keys.length === 0) return values;
+  const socket = await connect(opts);
+  try {
+    const BATCH = 50; // keep each command line comfortably bounded
+    for (let start = 0; start < keys.length; start += BATCH) {
+      const batch = keys.slice(start, start + BATCH);
+      const reply = await sendAndRead(socket, `get ${batch.join(" ")}\r\n`);
+      const lines = reply.split("\r\n");
+      for (let i = 0; i < lines.length - 1; i++) {
+        const header = lines[i].match(/^VALUE (\S+) \d+ \d+/);
+        if (header) {
+          values.set(header[1], lines[i + 1]);
+          i++;
+        }
+      }
+    }
+    return values;
+  } finally {
+    socket.destroy();
+  }
+}
+
+/** Raw `stats` - returns key/value pairs. */
 export async function inspectStats(
   opts: InspectorOptions,
 ): Promise<Record<string, string>> {
