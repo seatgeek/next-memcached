@@ -19,7 +19,7 @@ The [principles](./docs/README.md#principles) are priority-ordered (native > rel
 | `src/envelope.ts` | JSON string envelope v1 (`{v, tags, stale, timestamp, expire, revalidate, body:b64}`); decode failure reads as a miss; >900 KB encode is skipped |
 | `src/tags.ts` | Per-tag `{expired, stale}` records (`t:<sha1>` keys), fail-safe re-seed on missing records, `bumpTags` hard/soft write logic; mirrors Next's built-in tags-manifest algorithm |
 | `src/memcached-client.ts` | Lazy singleton `Memcache` client; `MEMCACHED_URI` env (default `localhost:11211`, `memcaches://` = TLS), `MEMCACHED_TLS_CA` env (CA bundle path), 750 ms timeout, retries 0 |
-| `src/types.ts` | Local mirror of Next 16.3's `cacheHandlers` types; provenance and the no-peer-dep rationale are annotated in the file, verified per Next version by the CI `compat` matrix + `examples/next-app/lib/handler-type-compat.ts` |
+| `src/types.ts` | Local mirror of Next 16.3's `cacheHandlers` types; provenance and the no-peer-dep rationale are annotated in the file, verified per Next version by the CI `compat` matrix + `examples/next-app/lib/handler-type-compat.ts`, and daily against `next@latest`/`canary` by the `nightly` workflow; [vercel/next.js#97592](https://github.com/vercel/next.js/pull/97592) (ours, open) would give the types a public home upstream |
 | `src/index.test.ts` | Integration suite, colocated with the code; needs live memcached (`make services`) |
 | `src/tls.test.ts` | TLS integration suite; needs the compose stack's `memcached-tls` (:21211, checked-in certs under `certs/`) |
 | `src/envelope.test.ts` | Pure unit tests for the envelope |

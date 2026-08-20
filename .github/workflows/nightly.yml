@@ -1,0 +1,59 @@
+name: nightly
+
+# Early-warning canary: reruns the compat suite against the newest published
+# Next.js (latest + canary) so upstream cacheHandlers churn surfaces here, on
+# a schedule, instead of in a consumer's upgrade PR. Failures signal Next.js
+# drift, not a regression in this repo — main CI stays the merge gate.
+on:
+  schedule:
+    - cron: "7 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  next-edge:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        next-tag: [latest, canary]
+    name: next-edge (next@${{ matrix.next-tag }})
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Start memcached test services (plain + TLS)
+        run: docker compose up -d
+
+      - name: Install dependencies (workspace)
+        run: pnpm install --frozen-lockfile
+
+      # `pnpm add` mutates only the runner's workspace. The example app is the
+      # compat surface: it type-checks lib/handler-type-compat.ts against
+      # Next's own CacheHandler interface and prerenders 'use cache' fragments
+      # through the handler into live memcached.
+      - name: Pin next@${{ matrix.next-tag }} in the example app
+        run: pnpm --filter next-memcached-example add next@${{ matrix.next-tag }}
+
+      - name: Report resolved versions
+        run: pnpm --filter next-memcached-example ls next react react-dom
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test (integration; coverage thresholds owned by main CI)
+        run: pnpm exec vitest run --coverage.enabled=false
+
+      - name: Build the package
+        run: pnpm build
+
+      - name: Build the example app against next@${{ matrix.next-tag }}
+        run: pnpm --filter next-memcached-example build

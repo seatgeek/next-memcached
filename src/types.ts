@@ -16,6 +16,10 @@
  * that the handler stays assignable to Next's real `CacheHandler`. If Next
  * changes the contract, that guard fails before this mirror silently lies.
  * Last hand-verified against next@16.3.0.
+ *
+ * Upstream: https://github.com/vercel/next.js/pull/97592 (ours) proposes a
+ * public types-only `next/cache-handlers` entrypoint; once released, point
+ * handler-type-compat.ts at it instead of the internal dist path.
  */
 
 /**

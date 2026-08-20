@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="https://github.com/seatgeek/next-memcached/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/seatgeek/next-memcached/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/seatgeek/next-memcached/actions/workflows/nightly.yml"><img alt="nightly (next@latest/canary)" src="https://github.com/seatgeek/next-memcached/actions/workflows/nightly.yml/badge.svg"></a>
   <a href="https://www.npmjs.com/package/@seatgeek/next-memcached"><img alt="npm version" src="https://img.shields.io/npm/v/%40seatgeek%2Fnext-memcached"></a>
   <a href="https://packagephobia.com/result?p=%40seatgeek%2Fnext-memcached"><img alt="install size" src="https://packagephobia.com/badge?p=%40seatgeek%2Fnext-memcached"></a>
   <a href="./nextjs-compatibility.md"><img alt="Next.js >= 16.3" src="https://img.shields.io/badge/Next.js-%E2%89%A516.3-black"></a>
@@ -32,7 +33,7 @@ Memcached as the shared cache behind Next.js `cacheHandlers` (`'use cache'` / Ca
 - **AWS ElastiCache Serverless ready.** TLS via `memcaches://`, text protocol only, TTL clamps that respect serverless LRU eviction. Tested against a real serverless cache.
 - **O(1) tag invalidation, no key lists.** Hard (`updateTag`) and soft (`revalidateTag(tag, 'max')`, stale-while-revalidate) both supported; invalidation cost does not grow with the number of entries carrying the tag.
 - **Every failure degrades to "no caching".** 750 ms op budget, versioned envelope (corrupt entries read as misses), eviction-safe tag records, a total exception guard on every method.
-- **Proven in CI.** Integration suite against live memcached (plain and TLS), Node 22/24, and a Next.js compat matrix: 16.3 floor, latest 16.x, canary.
+- **Proven in CI.** Integration suite against live memcached (plain and TLS), Node 22/24, and a Next.js compat matrix: 16.3 floor, latest 16.x, canary. A [nightly canary run](./nextjs-compatibility.md#the-nightly-canary) reruns the compat suite against `next@latest` and `next@canary` daily, so upstream drift surfaces here before it reaches an upgrade PR.
 
 > [!WARNING]
 > Pre-1.0, not yet published to npm, and under heavy development. Expect constant breaking changes to the config shape, the envelope format, and the exported API until v1.0.0 ships. Pin a commit, not a range, and re-read this doc before every update.

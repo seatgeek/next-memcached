@@ -6,9 +6,21 @@
   - `examples/next-app/lib/handler-type-compat.ts` asserts at compile time that the handler instance is assignable to Next's own internal `CacheHandler` interface (`next/dist/server/lib/cache-handlers/types`); if Next changes the contract, this fails the leg.
   - The example app is built against each version with live memcached, so `'use cache'` fragments actually prerender through the handler.
 
-  On top of the per-PR matrix, a scheduled `nightly` workflow reruns the same compat suite against `next@latest` and `next@canary` daily, so upstream drift surfaces on a schedule instead of in a consumer's upgrade PR. A nightly failure signals Next.js churn, not a regression in this repo — main CI stays the merge gate.
+  On top of the per-PR matrix, [the nightly canary](#the-nightly-canary) reruns the same suite against the newest published Next.js every day.
+
+  This whole verification apparatus exists because the types have no public home upstream — we're trying to fix that: [vercel/next.js#97592](https://github.com/vercel/next.js/pull/97592) proposes a types-only `next/cache-handlers` entrypoint (`import type { CacheHandler } from 'next/cache-handlers'`). If it lands, `handler-type-compat.ts` can check against the public path instead of the internal `dist` one, and consumers get a stable import for their own wiring; the local mirror stays either way (no-peer-dep rationale above).
 - **The default export is the handler instance, not a factory.** Next loads `cacheHandlers.<kind>` via `interopDefault(await import(path))` and uses the module's default export directly. Wiring details and the other config trap (`cacheMaxMemorySize: 0`) are in [getting started](./getting-started.md#2-turn-on-cache-components-and-point-at-the-handler).
 - **The page-level incremental cache is a separate layer** that `cacheHandlers` does not replace; [how-it-works.md](./how-it-works.md#important-the-page-level-cache-is-a-separate-layer) explains it and the `await connection()` opt-out. Everything else that's in or out of scope is in the matrix below.
+
+## The nightly canary
+
+The [`nightly` workflow](../.github/workflows/nightly.yml) (03:07 UTC daily, plus manual dispatch) reruns the compat suite against `next@latest` and `next@canary`: it pins the tag in the example app, then runs typecheck, the integration tests against live memcached (without coverage thresholds — those are main CI's job), the package build, and the example-app build. Upstream `cacheHandlers` churn — like the `expireTags` → `updateTags` rename during the 16.0 canary line — surfaces here on a schedule instead of in a consumer's upgrade PR.
+
+Reading a red nightly:
+
+- **`canary` leg red, `latest` green** — Next is changing something upstream. Investigate before it ships to stable; no consumer is affected yet.
+- **Both legs red** — a released Next.js version broke compatibility (or the runner environment drifted). Treat as urgent: consumers upgrading Next will hit it.
+- **Main CI is unaffected either way** — nightly failures signal Next.js drift, not a regression in this repo, and never block merges.
 
 ## Feature compatibility matrix
 
