@@ -110,7 +110,7 @@ export function createMemcachedCacheHandler(
     },
 
     async set(cacheKey, pendingEntry) {
-      let resolvePending = (): void => {};
+      let resolvePending: (() => void) | undefined;
       pendingSets.set(
         cacheKey,
         new Promise((resolve) => {
@@ -141,7 +141,7 @@ export function createMemcachedCacheHandler(
       } catch {
         // drop the write — cache-down must never surface as an error
       } finally {
-        resolvePending();
+        resolvePending?.();
         pendingSets.delete(cacheKey);
       }
     },

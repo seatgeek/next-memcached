@@ -222,6 +222,53 @@ describe("dynamic entries (expire === 0)", () => {
   });
 });
 
+describe("defensive guards", () => {
+  it("a corrupted envelope in memcached reads as a miss", async () => {
+    const cacheKey = key("corrupt-envelope");
+    await inspector.set(entryKey(cacheKey), "not a valid envelope", 60);
+    await expect(handler.get(cacheKey, [])).resolves.toBeUndefined();
+  });
+
+  it("a malformed tag record reads as expired (fail-safe miss)", async () => {
+    const tag = key("tag-corrupt");
+    const cacheKey = key("corrupt-tag");
+    await handler.set(cacheKey, pendingEntryOf("v1", { tags: [tag] }));
+    await inspector.set(tagKey(tag), "not json", 60);
+    await expect(handler.get(cacheKey, [])).resolves.toBeUndefined();
+  });
+
+  it("set() without a stream is a safe no-op", async () => {
+    const cacheKey = key("no-stream");
+    await expect(
+      handler.set(
+        cacheKey,
+        Promise.resolve({
+          ...makeMeta(),
+          value: undefined as unknown as ReadableStream<Uint8Array>,
+        }),
+      ),
+    ).resolves.toBeUndefined();
+    await expect(inspector.get(entryKey(cacheKey))).resolves.toBeUndefined();
+  });
+
+  it("set() drains but skips bodies over the memcached item cap", async () => {
+    const cacheKey = key("oversized");
+    await handler.set(cacheKey, pendingEntryOf("x".repeat(1024 * 1024)));
+    await expect(inspector.get(entryKey(cacheKey))).resolves.toBeUndefined();
+  });
+
+  it("a non-finite expire clamps to the max TTL and still persists", async () => {
+    const cacheKey = key("infinite-expire");
+    await handler.set(
+      cacheKey,
+      pendingEntryOf("forever-ish", { expire: Number.POSITIVE_INFINITY }),
+    );
+    await expect(inspector.get(entryKey(cacheKey))).resolves.toBeTypeOf(
+      "string",
+    );
+  });
+});
+
 describe("getExpiration", () => {
   it("returns Infinity (soft tags are checked in get())", async () => {
     await expect(handler.getExpiration(["tag-a", "tag-b"])).resolves.toBe(

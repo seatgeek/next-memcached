@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { decodeEntry, encodeEntry } from "./envelope.js";
 
 const meta = {
@@ -53,5 +53,19 @@ describe("envelope", () => {
   it("encode skips entries over the memcached item cap", () => {
     const oversized = Buffer.alloc(1024 * 1024, 7); // >900KB after base64
     expect(encodeEntry(meta, oversized)).toBeUndefined();
+  });
+
+  it("skip warning is logged only under NEXT_PRIVATE_DEBUG_CACHE", () => {
+    const oversized = Buffer.alloc(1024 * 1024, 7);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      vi.stubEnv("NEXT_PRIVATE_DEBUG_CACHE", "1");
+      expect(encodeEntry(meta, oversized)).toBeUndefined();
+      expect(warn).toHaveBeenCalledOnce();
+      expect(warn.mock.calls[0]?.[0]).toMatch(/oversized/);
+    } finally {
+      vi.unstubAllEnvs();
+      warn.mockRestore();
+    }
   });
 });

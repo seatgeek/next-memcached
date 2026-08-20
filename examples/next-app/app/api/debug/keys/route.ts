@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
+import { NextResponse } from "next/server";
 import {
   inspectGet,
   listKeys,
   parseMemcachedUri,
 } from "@/lib/memcached-inspector";
-import { NextResponse } from "next/server";
 
 /**
  * GET /api/debug/keys

@@ -14,10 +14,10 @@ export default defineConfig({
       // Tests are colocated with the code; types.ts is type-only.
       exclude: ["src/**/*.test.ts", "src/types.ts"],
       thresholds: {
-        lines: 95,
-        functions: 95,
-        branches: 85,
-        statements: 95,
+        lines: 98,
+        functions: 97,
+        branches: 93,
+        statements: 97,
       },
     },
   },

@@ -5,6 +5,8 @@
 - **The mirror is verified per-version in CI**, two ways, by the `compat` matrix (floor `16.3.0`, latest `16`, and `canary` as a non-blocking early-warning leg):
   - `examples/next-app/lib/handler-type-compat.ts` asserts at compile time that the handler instance is assignable to Next's own internal `CacheHandler` interface (`next/dist/server/lib/cache-handlers/types`); if Next changes the contract, this fails the leg.
   - The example app is built against each version with live memcached, so `'use cache'` fragments actually prerender through the handler.
+
+  On top of the per-PR matrix, a scheduled `nightly` workflow reruns the same compat suite against `next@latest` and `next@canary` daily, so upstream drift surfaces on a schedule instead of in a consumer's upgrade PR. A nightly failure signals Next.js churn, not a regression in this repo — main CI stays the merge gate.
 - **The default export is the handler instance, not a factory.** Next loads `cacheHandlers.<kind>` via `interopDefault(await import(path))` and uses the module's default export directly. Wiring details and the other config trap (`cacheMaxMemorySize: 0`) are in [getting started](./getting-started.md#2-turn-on-cache-components-and-point-at-the-handler).
 - **The page-level incremental cache is a separate layer** that `cacheHandlers` does not replace; [how-it-works.md](./how-it-works.md#important-the-page-level-cache-is-a-separate-layer) explains it and the `await connection()` opt-out. Everything else that's in or out of scope is in the matrix below.
 

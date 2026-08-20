@@ -31,7 +31,7 @@
   "engines": {
     "node": ">=22.19.0"
   },
-  "packageManager": "pnpm@10.29.3",
+  "packageManager": "pnpm@11.22.0",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -48,7 +48,9 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "prepack": "cp docs/README.md README.md",
@@ -68,14 +70,14 @@
     "memcache": "^1.10.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.2",
-    "@biomejs/biome": "^1.9.4",
-    "@changesets/cli": "^2.29.5",
-    "@types/node": "^22.10.5",
-    "@vitest/coverage-v8": "^2.1.8",
-    "publint": "^0.3.12",
-    "tsup": "^8.5.0",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@biomejs/biome": "^2.5.9",
+    "@changesets/cli": "^3.0.1",
+    "@types/node": "^24.13.3",
+    "@vitest/coverage-v8": "^4.1.11",
+    "publint": "^0.3.24",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
   }
 }
