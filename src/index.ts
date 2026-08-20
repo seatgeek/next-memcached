@@ -14,7 +14,7 @@ export type { CacheEntry, CacheHandlerV2, PendingCacheEntry };
 
 // memcached's max relative TTL. Values ≤0/NaN mean "never expire" to the
 // client (opposite of memcached semantics, and TTL-0 items are exempt from
-// serverless LRU), values >30d throw — so clamp to [1, 30d], never 0.
+// serverless LRU), values >30d throw - so clamp to [1, 30d], never 0.
 const MAX_TTL_SECONDS = 2_592_000;
 
 export const entryKey = (cacheKey: string): string => `e:${sha1hex(cacheKey)}`;
@@ -67,7 +67,7 @@ export function createMemcachedCacheHandler(
   // key waits for the write instead of returning a spurious miss.
   const pendingSets = new Map<string, Promise<void>>();
 
-  // Every method body is a total try/catch returning the safe default —
+  // Every method body is a total try/catch returning the safe default -
   // a dead memcached degrades to "no caching", never to a render error.
   return {
     async get(cacheKey, softTags) {
@@ -82,7 +82,7 @@ export function createMemcachedCacheHandler(
           return undefined;
         }
         // getExpiration() returns Infinity, which tells Next this handler
-        // checks the soft (implicit) tags itself — so both the entry's own
+        // checks the soft (implicit) tags itself - so both the entry's own
         // tags and the softTags are checked here.
         const tags = [...new Set([...decoded.tags, ...softTags])];
         const records = [...(await readTagRecords(getClient(), tags)).values()];
@@ -124,11 +124,11 @@ export function createMemcachedCacheHandler(
         const entry = await pendingEntry;
         const stream = await entry.value;
         if (!stream) return;
-        // The stream must always be fully drained — even when the write is
-        // skipped — or Next's render stalls on the unread writer side.
+        // The stream must always be fully drained - even when the write is
+        // skipped - or Next's render stalls on the unread writer side.
         const body = await drainToBuffer(stream);
         // An expire of 0 marks a dynamic entry that is regenerated on every
-        // read and never served back — persisting it would be a wasted write
+        // read and never served back - persisting it would be a wasted write
         // (matches the built-in handler's production behavior).
         if (entry.expire === 0) return;
         const encoded = encodeEntry(entry, body);
@@ -139,7 +139,7 @@ export function createMemcachedCacheHandler(
           clampTtlSeconds(entry.expire),
         );
       } catch {
-        // drop the write — cache-down must never surface as an error
+        // drop the write - cache-down must never surface as an error
       } finally {
         resolvePending?.();
         pendingSets.delete(cacheKey);
@@ -167,7 +167,7 @@ export function createMemcachedCacheHandler(
   };
 }
 
-// Next.js loads `cacheHandlers.<kind>` via `interopDefault(await import(path))` —
+// Next.js loads `cacheHandlers.<kind>` via `interopDefault(await import(path))` -
 // it expects the module's default export to be the handler instance itself,
 // not a factory (see next/dist/server/next-server.js#loadCustomCacheHandlers).
 export default createMemcachedCacheHandler();

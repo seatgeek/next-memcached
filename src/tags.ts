@@ -40,11 +40,11 @@ const parseTagRecord = (raw: string | undefined): TagRecord | undefined => {
  * Reads the records for the given tags in one batched multi-get.
  *
  * Fail-safe: a tag with no record (evicted, or never seen) is treated as
- * `{expired: now}` for this read — an evicted record may have carried a lost
+ * `{expired: now}` for this read - an evicted record may have carried a lost
  * invalidation, so it must read as "just invalidated", never as "never
  * invalidated". The record is re-seeded fire-and-forget via `add` (not `set`)
  * so a concurrent real updateTags write wins. Entries written after the
- * re-seed have `timestamp > expired` and survive — one extra miss per cold
+ * re-seed have `timestamp > expired` and survive - one extra miss per cold
  * tag, then self-healed.
  */
 export const readTagRecords = async (

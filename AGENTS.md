@@ -24,6 +24,7 @@ The [principles](./docs/README.md#principles) are priority-ordered (native > rel
 | `src/tls.test.ts` | TLS integration suite; needs the compose stack's `memcached-tls` (:21211, checked-in certs under `certs/`) |
 | `src/envelope.test.ts` | Pure unit tests for the envelope |
 | `examples/next-app` | Runnable Next.js 16 demo + manual smoke test (workspace member) |
+| `e2e/` | End-to-end suite: `next start` of the example app over live memcached (plain + TLS), cache semantics asserted over HTTP; own vitest config, **excluded from the coverage ratchet**; JUnit output per mode is published to the CI job summary |
 
 ## Invariants (do not weaken)
 
@@ -53,6 +54,7 @@ make init       # brew bundle + mise install + pnpm install
 make services   # docker compose up -d (memcached plain :11211, TLS :21211)
 make check      # typecheck + lint + test + build + export checks
 make test       # vitest with coverage (requires services)
+make e2e        # e2e suite vs the example app, plain + TLS (requires services)
 make format     # biome auto-fix
 make example    # build + run examples/next-app on :3000
 make docs       # preview docs as GitHub renders them (:6419)

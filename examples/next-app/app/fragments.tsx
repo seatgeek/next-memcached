@@ -15,7 +15,7 @@ const palette = {
 /**
  * Presentational shell for a cached fragment. All props are computed INSIDE
  * the `'use cache'` function that renders it, so `cachedAt` is the moment the
- * cached value was produced — on a cache hit it stays frozen, which is the
+ * cached value was produced - on a cache hit it stays frozen, which is the
  * visual proof of caching.
  *
  * Attribute order matters: the e2e harness greps for
@@ -132,7 +132,46 @@ export async function DefaultProfileNoTag() {
   );
 }
 
-/** Section 1: identical for every visitor — no cookie/session dependency. */
+/**
+ * Carries THREE tags at once - invalidating any single one of them must bust
+ * this entry. Paired with SharedTagC to prove tag fan-out across entries.
+ */
+export async function MultiTagABC() {
+  "use cache";
+  cacheLife("long");
+  cacheTag("tag-a", "tag-b", "tag-c");
+  const cachedAt = Date.now();
+  return (
+    <Stamp
+      fragment="multi-tag-abc"
+      value={`${cachedAt}-${randomValue()}`}
+      cachedAt={cachedAt}
+      label="MultiTagABC"
+      profile="long: stale 5m / revalidate 5m / expire 10m"
+      tags={["tag-a", "tag-b", "tag-c"]}
+    />
+  );
+}
+
+/** Shares only tag-c with MultiTagABC: tag-c invalidation moves both, tag-a/b only the other. */
+export async function SharedTagC() {
+  "use cache";
+  cacheLife("long");
+  cacheTag("tag-c");
+  const cachedAt = Date.now();
+  return (
+    <Stamp
+      fragment="shared-tag-c"
+      value={`${cachedAt}-${randomValue()}`}
+      cachedAt={cachedAt}
+      label="SharedTagC"
+      profile="long: stale 5m / revalidate 5m / expire 10m"
+      tags={["tag-c"]}
+    />
+  );
+}
+
+/** Section 1: identical for every visitor - no cookie/session dependency. */
 export async function PublicContent() {
   "use cache";
   cacheLife("long");
@@ -152,7 +191,7 @@ export async function PublicContent() {
 
 /**
  * Section 2: per-browser-session content. The session id arrives as an
- * ARGUMENT, so `'use cache'` includes it in the cache key automatically —
+ * ARGUMENT, so `'use cache'` includes it in the cache key automatically -
  * two browsers (or incognito windows) each get their own frozen timestamp.
  */
 export async function PrivateContent({ sessionId }: { sessionId: string }) {
@@ -175,7 +214,7 @@ export async function PrivateContent({ sessionId }: { sessionId: string }) {
 /**
  * Section 3a: carries its own unique per-entry tag so the "invalidate this
  * entry" button can target exactly this fragment. Next.js has no key-level
- * invalidation API — a one-entry tag is the idiomatic equivalent.
+ * invalidation API - a one-entry tag is the idiomatic equivalent.
  */
 export async function EntryDemo() {
   "use cache";
@@ -194,7 +233,7 @@ export async function EntryDemo() {
   );
 }
 
-/** Section 3c: long-running cache — only tag/path invalidation moves it. */
+/** Section 3c: long-running cache - only tag/path invalidation moves it. */
 export async function VeryLongTtl() {
   "use cache";
   cacheLife("verylong");

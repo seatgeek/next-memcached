@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
  * `revalidateTag` from this route handler:
  * hard -> revalidateTag(tag, { expire: 0 }): forces immediate recomputation
  *         on the next request (acceptance check #4's hard-invalidation leg).
- * soft -> revalidateTag(tag, 'max'): stale-while-revalidate — serves stale
+ * soft -> revalidateTag(tag, 'max'): stale-while-revalidate - serves stale
  *         once before refreshing (soft-invalidation leg).
  */
 export async function GET(request: Request) {

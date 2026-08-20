@@ -7,8 +7,10 @@ import {
   DefaultProfileNoTag,
   EntryDemo,
   LongTtlTagA,
+  MultiTagABC,
   PrivateContent,
   PublicContent,
+  SharedTagC,
   ShortTtlTagA,
   ShortTtlTagB,
   VeryLongTtl,
@@ -49,7 +51,7 @@ function Section(props: {
 
 /**
  * Reads the session cookie OUTSIDE any cached function (cookies() is a
- * dynamic API — allowed in the page's dynamic shell, never inside
+ * dynamic API - allowed in the page's dynamic shell, never inside
  * `'use cache'`). The id is then passed as an argument into PrivateContent,
  * making it part of that fragment's cache key.
  */
@@ -92,7 +94,7 @@ async function PrivateSection() {
  * from the PPR static shell and Next's page-level incremental cache (a
  * separate system from cacheHandlers, backed by per-pod disk). Without this,
  * every fragment with stale >= the route's stale-time is served straight
- * from the cached page shell — never consulting the memcached handler, which
+ * from the cached page shell - never consulting the memcached handler, which
  * reads as "still cached" during an outage. cacheComponents requires the
  * dynamic access to sit under a <Suspense> boundary, hence the wrapper.
  */
@@ -176,6 +178,12 @@ async function DemoSections() {
           </Suspense>
           <Suspense fallback="loading">
             <LongTtlTagA />
+          </Suspense>
+          <Suspense fallback="loading">
+            <MultiTagABC />
+          </Suspense>
+          <Suspense fallback="loading">
+            <SharedTagC />
           </Suspense>
           <span style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <ActionButton

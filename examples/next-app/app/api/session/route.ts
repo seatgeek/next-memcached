@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
  * GET /api/session?clear=1 -> clears the cookie (ends the session)
  *
  * The session id is passed as an ARGUMENT into the private `'use cache'`
- * fragment, so it becomes part of the cache key — each browser session gets
+ * fragment, so it becomes part of the cache key - each browser session gets
  * its own independently cached (and independently frozen) entry.
  */
 export async function GET(request: Request) {

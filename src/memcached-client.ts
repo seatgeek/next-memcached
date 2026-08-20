@@ -11,9 +11,9 @@ const DEFAULT_URI = "localhost:11211";
 // must never stall a render beyond this budget (client default is 5000ms).
 const OPERATION_TIMEOUT_MS = 750;
 
-// CA bundle for TLS targets (MEMCACHED_TLS_CA env) — read once per path.
+// CA bundle for TLS targets (MEMCACHED_TLS_CA env) - read once per path.
 // Without it, memcaches:// URIs still work: the client falls back to
-// `tls: true` (Node's default trust store — the real ElastiCache case).
+// `tls: true` (Node's default trust store - the real ElastiCache case).
 let cachedCa: { path: string; ca: Buffer } | undefined;
 const readCa = (path: string): Buffer => {
   if (cachedCa?.path !== path) cachedCa = { path, ca: readFileSync(path) };
@@ -35,7 +35,7 @@ export const createClient = (uri?: string): Memcache =>
 
 let sharedClient: Memcache | undefined;
 
-/** Lazy singleton — created on first cache operation, not at module load. */
+/** Lazy singleton - created on first cache operation, not at module load. */
 export const getSharedClient = (): Memcache => {
   sharedClient ??= createClient();
   return sharedClient;

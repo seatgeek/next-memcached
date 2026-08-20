@@ -45,7 +45,7 @@ const isStringArray = (value: unknown): value is string[] =>
 
 /**
  * Decodes an envelope produced by `encodeEntry`. Returns undefined (⇒ treated
- * as a miss) on any parse error, shape mismatch, or version mismatch — this
+ * as a miss) on any parse error, shape mismatch, or version mismatch - this
  * protects rolling deploys where pods run different envelope versions.
  */
 export const decodeEntry = (raw: string): DecodedEntry | undefined => {
