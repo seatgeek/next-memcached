@@ -1,6 +1,6 @@
 {
   "name": "@seatgeek/next-memcached",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Next.js 16 cacheHandlers ('use cache' / Cache Components) implementation backed by memcached, a shared cache for self-hosted multi-node deployments, ElastiCache Serverless ready.",
   "keywords": [
     "next",

@@ -1,5 +1,11 @@
 # @seatgeek/next-memcached
 
+## 0.0.2
+
+### Patch Changes
+
+- Ship the README in the published tarball (`prepack` copies `docs/README.md` into the package root; `postpack` removes it).
+
 ## 0.0.1
 
 ### Patch Changes
