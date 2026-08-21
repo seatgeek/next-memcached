@@ -138,12 +138,16 @@ describe(`e2e cache semantics (${MODE})`, () => {
   it("soft invalidation marks tags stale (not expired), then refreshes", async () => {
     const before = await warm();
     // The record is (re-)seeded asynchronously after the warm reads flush
-    // their responses - poll for it rather than snapshotting an instant.
-    const recordBefore = await expect
-      .poll(() => tagRecord("tag-a"), POLL)
-      .toBeDefined()
-      .then(() => tagRecord("tag-a"));
-    expect(recordBefore, "tag-a record seeded by the warm reads").toBeDefined();
+    // their responses, and metadump enumeration is itself slightly racy -
+    // poll for the record and keep the snapshot that satisfied the poll
+    // (a separate re-read could transiently miss it again).
+    let recordBefore!: Awaited<ReturnType<typeof tagRecord>>;
+    await expect
+      .poll(async () => {
+        recordBefore = await tagRecord("tag-a");
+        return recordBefore;
+      }, POLL)
+      .toBeDefined();
 
     await invalidate("tag-a", "soft");
 
@@ -153,8 +157,13 @@ describe(`e2e cache semantics (${MODE})`, () => {
     // leaves it alone or pushes it into the future (revalidateTag(tag,
     // 'max') sets stale = now plus a far-future expire). If soft ever
     // degrades into hard, `expired` lands at ~now and this fails.
-    const recordAfter = await tagRecord("tag-a");
-    expect(recordAfter?.stale ?? 0).toBeGreaterThan(recordBefore?.stale ?? 0);
+    let recordAfter!: Awaited<ReturnType<typeof tagRecord>>;
+    await expect
+      .poll(async () => {
+        recordAfter = await tagRecord("tag-a");
+        return recordAfter?.stale ?? 0;
+      }, POLL)
+      .toBeGreaterThan(recordBefore?.stale ?? 0);
     expect(recordAfter?.expired ?? Number.POSITIVE_INFINITY).toBeGreaterThan(
       Date.now() + 5_000,
     );
